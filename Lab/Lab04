@@ -1,0 +1,23 @@
+.text
+	li s1 6   	# Gán giá trị cho s1 
+	li s2 8   	# Gán giá trị cho s2 
+	li t0, 0 	# Gán giá trị cho biến đến t0
+	li s0, 0	# Gán giá trị cho s0 = 0 
+	li t1, 1 	# Tạo hằng t1 để so sánh 
+	li s3, 32 	# Khởi tạo số vòng lặp
+LOOP:
+    bge t0, s3, ENDLOOP  # Nếu đã lặp 32 lần, kết thúc
+
+    and t2, s2, t1       # Kiểm tra bit thấp nhất của s2 (s2 & 1)
+    beqz t2, SKIP_ADD    # Nếu bit là 0, bỏ qua cộng
+    add s0, s0, s1       # Nếu bit là 1, cộng s1 vào kết quả
+
+SKIP_ADD:
+    slli s1, s1, 1       # Dịch trái s1 (nhân đôi)
+    srli s2, s2, 1       # Dịch phải s2 (chia đôi)
+    beq s2, zero, ENDLOOP # Nếu s2 == 0, kết thúc sớm
+    addi t0, t0, 1       # Tăng biến đếm
+    j LOOP               # Quay lại vòng lặp
+
+ENDLOOP:
+	

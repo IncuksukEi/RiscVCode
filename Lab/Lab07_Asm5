@@ -1,0 +1,99 @@
+.data 
+	msg1: .asciz "gia tri lon nhat la "
+	msg2: .asciz "gia tri nho nhat la "
+	msg3: .asciz " duoc luu tru trong a"
+	msg4: .asciz "\n"
+.text
+main:
+	# Nhap cac thanh ghi
+	li a0 2
+	li a1 1
+	li a2 0
+	li a3 5
+	li a4 4
+	li a5 -7
+	li a6 9
+	li a7 8
+	# Dua cac thanh ghi vao stack
+	addi sp, sp, -4
+	sw a7, 0(sp)
+	addi sp, sp, -4
+	sw a6, 0(sp)
+	addi sp, sp, -4
+	sw a5, 0(sp)
+	addi sp, sp, -4
+	sw a4, 0(sp)
+	addi sp, sp, -4
+	sw a3, 0(sp)
+	addi sp, sp, -4
+	sw a2, 0(sp)
+	addi sp, sp, -4
+	sw a1, 0(sp)
+	addi sp, sp, -4
+	sw a0, 0(sp)
+	# Khởi tạo các biến lưu kết quả chương trình
+	add s0, a0, zero	# Khởi tạo giá trị min
+	add s1, a0, zero	# Khởi tạo giá trị max 
+	li t0 0		# Khởi tạo biến đếm byte
+	li t2 0		# Khởi tạo biến dếm vị trí
+	li s4 32 	# Khởi tạo số byte của sp
+	li s2 0		# Khởi tạo vị trí của số nhỏ nhất
+	li s3 0		# Khởi tạo vị trí của số lớn nhất
+	jal Max_Min
+	
+print:
+	li a7, 4
+	la a0, msg1
+	ecall
+	li a7, 1
+	mv a0, s1
+	ecall
+	li a7, 4
+	la a0, msg3
+	ecall
+	li a7, 1
+	mv a0, s3
+	ecall
+	li a7, 4
+	la a0, msg4
+	ecall
+	li a7, 4
+	la a0, msg2
+	ecall
+	li a7, 1
+	mv a0, s0
+	ecall
+	li a7, 4
+	la a0, msg3
+	ecall
+	li a7, 1
+	mv a0, s2
+	ecall
+end_main:
+	li a7, 10
+	ecall
+
+	
+Max_Min:
+	beq t0, s4, end_max_min
+	lw t1, 0(sp)
+	blt t1, s0, swap_min
+countinue1:
+	blt s1, t1, swap_max
+countinue2:
+	sw zero, 0(sp)
+	addi t0, t0, 4
+	addi sp, sp, 4
+	addi t2, t2, 1
+	j Max_Min
+end_max_min:
+	jr ra
+	
+swap_min:
+	add s2, t2, zero
+	add s0, t1, zero
+	j countinue1
+swap_max:
+	add s3, t2, zero
+	add s1, t1, zero
+	j countinue2

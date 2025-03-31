@@ -1,0 +1,55 @@
+# Laboratory Exercise 7, Home Assignment 4 
+.data 
+	message: .asciz  "Ket qua tinh giai thua la: " 
+.text 
+main: 
+	jal    WARP 
+print: 
+	add    a1, s0, zero     # a0 = result from N! 
+	li     a7, 4
+	la     a0, message
+	ecall 
+	li     a7, 1
+	mv     a0, s0
+	ecall
+quit: 
+	li     a7, 10           # terminate 
+	ecall       
+end_main: 
+
+WARP: 
+    addi   sp, sp, -4   # adjust stack pointer 
+    sw     ra, 0(sp)    # save return address 
+ 
+    li     a0, 3        # load test input N 
+    jal    FACT         # call fact procedure              
+        
+    lw     ra, 0(sp)    # restore return address 
+    sw 	   zero, 0(sp)
+    addi   sp, sp, 4    # return stack pointer 
+    jr     ra                             
+wrap_end: 
+
+FACT: 
+    addi    sp, sp, -8  # allocate space for ra, a0 in stack   
+    sw      ra, 4(sp)   # save ra register 
+    sw      a0, 0(sp)   # save a0 register 
+ 
+    li      t0, 2 
+    bge     a0, t0, recursive 
+    li      s0, 1       # return the result N!=1 
+    j       done 
+recursive: 
+    addi    a0, a0, -1  # adjust input argument 
+    jal     FACT        # recursive call   
+    lw      s1, 0(sp)   # load a0 
+    mul     s0, s0, s1 
+done: 
+    lw      ra, 4(sp)   # restore ra register 
+    lw      a0, 0(sp)   # restore a0 register 
+    sw 	    zero, 0(sp)
+    addi    sp,sp,4     # restore stack pointer 
+    sw 	    zero, 0(sp)
+    addi    sp,sp,4	
+    jr      ra          # jump to caller 
+fact_end:
