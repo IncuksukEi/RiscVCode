@@ -4,6 +4,7 @@
 	msg3: .asciz "Tong cac phan tu am trong mang la: "
 	msg4: .asciz "Tong cac phan tu duong tron mang la: "
 	msg5: .asciz "\n"
+	msg6: .asciz "Do dai mang khong hop le!"
 .text 
 main:
 	# Nhap so luong phan tu cua mang
@@ -13,6 +14,8 @@ main:
 	li a7, 5
 	ecall
 	addi s0, a0, 0	# Luu so phan tu trong mang
+check_n:
+	bge zero,s0, print_error
 	
 	# Nhap cac phan tu trong mang
 	li t0, 0 	# Khoi tao bien dem
@@ -54,6 +57,11 @@ print:
 	ecall
 	li a7, 1
 	mv a0, s2
+	ecall
+	j end_main
+print_error:
+	li a7, 4
+	la a0, msg6
 	ecall
 end_main:
 	li a7, 10
